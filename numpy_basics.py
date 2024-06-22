@@ -2,24 +2,29 @@ import numpy as np
 import math
 
 
-def print_vec(fun: callable) -> None:
-    def wrapper(*args, **kwargs) -> np.ndarray:
-        print("Arguments provided: ", *args, **kwargs)
-        print(f"Function name: {fun.__name__}")
-        ans = fun(*args, **kwargs)
-        print("Returns: ", ans)
-        print("Shape: ", ans.shape)
-        print("---------------------------------")
-        return ans
-    return wrapper
+def print_vec_toggle(pretty_print: bool = True):
+    if not pretty_print:
+        return lambda fun: (lambda *args, **kwargs: fun(*args, **kwargs))
+
+    def print_vec(fun: callable) -> None:
+        def wrapper(*args, **kwargs) -> np.ndarray:
+            ans = fun(*args, **kwargs)
+            print("Arguments provided: ", *args, **kwargs)
+            print(f"Function name: {fun.__name__}")
+            print("Returns: ", ans)
+            print("Shape: ", ans.shape)
+            print("---------------------------------")
+            return ans
+        return wrapper
+    return print_vec
 
 
-@print_vec
+@print_vec_toggle(False)
 def rv(num_list: list[int]) -> np.ndarray:
     return np.array([num_list])
 
 
-@print_vec
+@print_vec_toggle(False)
 def cv(num_list: list[int]) -> np.ndarray:
     return np.reshape(num_list, (len(num_list), 1))
 
@@ -28,7 +33,7 @@ def length(column_vector: np.ndarray) -> int:
     return math.sqrt((column_vector.T @ column_vector)[0, 0])
 
 
-@print_vec
+@print_vec_toggle(False)
 def normalize(column_vector: np.ndarray) -> np.ndarray:
     return column_vector / length(column_vector)
 
