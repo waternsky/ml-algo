@@ -1,12 +1,13 @@
 import numpy as np
+from typing import Callable
 import math
 
 
-def print_vec_toggle(pretty_print: bool = True):
+def print_vec_toggle(pretty_print: bool = True) -> Callable:
     if not pretty_print:
         return lambda fun: (lambda *args, **kwargs: fun(*args, **kwargs))
 
-    def print_vec(fun: callable) -> None:
+    def print_vec(fun: Callable) -> Callable:
         def wrapper(*args, **kwargs) -> np.ndarray:
             ans = fun(*args, **kwargs)
             print("Arguments provided: ", *args, **kwargs)
